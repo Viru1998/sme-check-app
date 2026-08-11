@@ -1,0 +1,96 @@
+# SME Check - question set
+# Each question maps to one or more NIST CSF 2.0 Subcategories.
+# Real scoring uses these mappings to compute the personalised gap list
+# against combined_priority.csv from the csf_sme_coverage pipeline.
+#
+# Adding a question:
+#   1. Pick a stable snake_case id (never change once shipped)
+#   2. Phrase the question in plain English (avoid CSF jargon)
+#   3. Map to CSF Subcategories - use the exact IDs from CSF 2.0 Core
+#
+# The initial set covers the top-10 combined_priority items from the
+# dissertation research. Extend to ~40 questions for full coverage.
+
+version: "0.1"
+last_updated: "2026-08-11"
+
+items:
+  - id: mfa_email
+    text: "We require multi-factor authentication (MFA) on email accounts."
+    csf_subcategory: "PR.AA-05"
+
+  - id: mfa_admin
+    text: "We require MFA for administrator / privileged accounts."
+    csf_subcategory: "PR.AA-05"
+
+  - id: least_privilege
+    text: "Staff have only the access rights they need for their role (no shared admin accounts)."
+    csf_subcategory: "PR.AA-05"
+
+  - id: network_segmentation
+    text: "Guest Wi-Fi and business Wi-Fi are on separate networks."
+    csf_subcategory: "PR.IR-01"
+
+  - id: vpn_remote
+    text: "Remote workers connect via VPN or a zero-trust access solution."
+    csf_subcategory: "PR.IR-01"
+
+  - id: firewall_managed
+    text: "We have a managed firewall (not just the ISP-provided router)."
+    csf_subcategory: "PR.IR-01"
+
+  - id: patching_os
+    text: "Operating systems and browsers are patched within 30 days of a security update."
+    csf_subcategory: "PR.PS-01"
+
+  - id: patching_apps
+    text: "Business applications (Office, accounting software, etc.) are patched regularly."
+    csf_subcategory: "PR.PS-01"
+
+  - id: endpoint_av
+    text: "Every laptop and desktop runs endpoint protection (antivirus / EDR)."
+    csf_subcategory: "DE.CM-09"
+
+  - id: backups_offline
+    text: "We have offline or air-gapped backups (not just cloud sync)."
+    csf_subcategory: "PR.DS-11"
+
+  - id: backups_tested
+    text: "We have tested restoring from backup in the last 12 months."
+    csf_subcategory: "PR.DS-11"
+
+  - id: security_policy
+    text: "We have a written cybersecurity policy shared with all staff."
+    csf_subcategory: "GV.PO-01"
+
+  - id: incident_plan
+    text: "We have a written Incident Response Plan (who to call, what to do)."
+    csf_subcategory: "RS.MA-01"
+
+  - id: staff_training
+    text: "All staff have completed cybersecurity awareness training in the last 12 months."
+    csf_subcategory: "PR.AT-01"
+
+  - id: phishing_simulation
+    text: "We run periodic phishing simulations to test staff awareness."
+    csf_subcategory: "PR.AT-01"
+
+  - id: asset_inventory
+    text: "We keep an up-to-date inventory of laptops, servers and business software."
+    csf_subcategory: "ID.AM-01"
+
+  - id: password_manager
+    text: "Staff use a password manager rather than reusing / writing down passwords."
+    csf_subcategory: "PR.AA-01"
+
+  - id: supplier_review
+    text: "We review the cybersecurity posture of key IT suppliers annually."
+    csf_subcategory: "GV.SC-04"
+
+  - id: data_encryption
+    text: "Sensitive data on laptops and USB drives is encrypted."
+    csf_subcategory: "PR.DS-01"
+
+  - id: log_monitoring
+    text: "Someone reviews security logs / alerts weekly (in-house or via an MSP)."
+    csf_subcategory: "DE.CM-01"
