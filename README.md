@@ -74,6 +74,12 @@ The initial 20 questions cover the highest-priority CSF 2.0 Subcategories identi
 
 Each question is mapped to its CSF Subcategory in [`data/questions.yml`](data/questions.yml). Adding a new question is a two-line YAML edit — no code change required.
 
+### How coverage is scored
+
+From v0.5, coverage is scored per CSF Subcategory using any-tick semantics: a Subcategory counts as covered if any of its underlying questions is ticked. This means an SME with MFA on email but not on admin accounts will show `PR.AA-05` as covered. Real-world posture is more granular than this MVP can capture. Treat every covered Subcategory as "partially addressed" rather than "complete".
+
+(v0.1 uses placeholder scoring; see [Status](#status-mvp-skeleton-v01).)
+
 ---
 
 ## Roadmap
