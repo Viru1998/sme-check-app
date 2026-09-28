@@ -18,10 +18,16 @@ TOP_N_GAPS = 10
 UNWEIGHTED_NOTE = "No combined score in source data"
 
 
-def load_priority(path: Path = PRIORITY_FILE) -> pd.Series:
-    """Load `combined_score` indexed by CSF Subcategory ID."""
-    df = pd.read_csv(path, usecols=["subcategory", "combined_score"])
-    return df.set_index("subcategory")["combined_score"]
+def load_priority(path: Path = PRIORITY_FILE) -> pd.DataFrame:
+    """Load `combined_score` and `weighted_coverage` indexed by Subcategory ID.
+
+    `weighted_coverage` is the Verizon DBIR threat weight; it is used only to
+    break ties in the gap list.
+    """
+    df = pd.read_csv(
+        path, usecols=["subcategory", "combined_score", "weighted_coverage"]
+    )
+    return df.set_index("subcategory")
 
 
 def group_by_subcategory(questions: dict) -> dict[str, list[dict]]:
@@ -35,7 +41,7 @@ def group_by_subcategory(questions: dict) -> dict[str, list[dict]]:
 def score_assessment(
     answers: dict[str, bool],
     questions: dict,
-    priority: pd.Series,
+    priority: pd.DataFrame,
     top_n: int = TOP_N_GAPS,
 ) -> dict:
     """Score an assessment with any-tick semantics per CSF Subcategory.
@@ -45,9 +51,10 @@ def score_assessment(
       coverage_pct  covered Subcategories / assessed Subcategories x 100
       have, total   covered and assessed Subcategory counts
       gaps          DataFrame of up to `top_n` uncovered Subcategories, highest
-                    combined_score first; zero-score gaps are listed last with
-                    a Note, since 0 means missing threat weight or Irish gap
-                    data rather than low importance
+                    sorted by combined_score desc, then weighted_coverage
+                    (threat weight) desc, then Subcategory ID; zero-score gaps
+                    carry a Note, since 0 means missing threat weight or Irish
+                    gap data rather than low importance
 
     Raises ValueError if a question maps to a Subcategory missing from
     `priority`.
@@ -62,7 +69,8 @@ def score_assessment(
         for sub, items in grouped.items()
         if any(answers.get(item["id"], False) for item in items)
     }
-    weights = priority.reindex(list(grouped)).astype(float)
+    assessed = priority.reindex(list(grouped)).astype(float)
+    weights = assessed["combined_score"]
 
     total = len(grouped)
     have = len(covered)
@@ -76,14 +84,28 @@ def score_assessment(
                 "Priority score": round(weights[sub], 2),
                 "Questions": "; ".join(item["text"] for item in items),
                 "Note": "" if weights[sub] > 0 else UNWEIGHTED_NOTE,
+                "_combined": weights[sub],
+                "_threat": assessed.at[sub, "weighted_coverage"],
             }
             for sub, items in grouped.items()
             if sub not in covered
         ],
-        columns=["CSF Subcategory", "Priority score", "Questions", "Note"],
+        columns=[
+            "CSF Subcategory",
+            "Priority score",
+            "Questions",
+            "Note",
+            "_combined",
+            "_threat",
+        ],
     )
+    # Sort on unrounded values so rounding can't create false ties.
     gaps = (
-        gaps.sort_values(["Priority score", "CSF Subcategory"], ascending=[False, True])
+        gaps.sort_values(
+            ["_combined", "_threat", "CSF Subcategory"],
+            ascending=[False, False, True],
+        )
+        .drop(columns=["_combined", "_threat"])
         .head(top_n)
         .reset_index(drop=True)
     )

@@ -41,8 +41,8 @@ def load_questions() -> dict:
 # Scoring
 # ---------------------------------------------------------------
 @st.cache_data
-def load_priority_table() -> pd.Series:
-    """Load combined_score per CSF Subcategory (cached across reruns)."""
+def load_priority_table() -> pd.DataFrame:
+    """Load priority scores per CSF Subcategory (cached across reruns)."""
     return load_priority()
 
 

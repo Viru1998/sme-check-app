@@ -75,7 +75,7 @@ v0.5 uses **any-tick semantics**: a CSF Subcategory counts as "have" if at least
 - Example: ticking only `mfa_email` marks `PR.AA-05` as "have", even though `mfa_admin` and `least_privilege` are unticked.
 - **Weighted coverage** (the results headline) = sum of `combined_score` for covered Subcategories ÷ the sum for all Subcategories in `questions.yml`. Unweighted coverage (the Subcategory count) is shown beneath it.
 - **Zero scores:** 7 of the 13 current Subcategories have `combined_score` 0. `GV.PO-01`, `PR.AT-01` and `RS.MA-01` have no Verizon threat weight. `PR.PS-01`, `DE.CM-01`, `PR.DS-01` and `GV.SC-04` have a threat weight but an Irish gap of 0. They add nothing to weighted coverage and sort last in the gap list with a Note. A 0 means missing data, not low importance, so the UI must not imply otherwise.
-- **Top-10 cap:** with nothing ticked, the cap drops three zero-score gaps, which tie and sort alphabetically. With ~40 questions this will matter more.
+- **Gap order:** `combined_score` descending, then `weighted_coverage` (threat weight) descending, then Subcategory ID. So zero-score gaps with a real threat weight (`DE.CM-01`, `PR.DS-01`, `PR.PS-01`, `GV.SC-04`) rank above those without one. With nothing ticked, the top-10 cap drops `GV.PO-01`, `PR.AT-01` and `RS.MA-01`. With ~40 questions this will matter more.
 - **User-facing wording:** because any-tick is coarse, the results page and PDF report must label covered Subcategories "partially addressed", never "complete" or "fully covered". Keep this in sync with the "How coverage is scored" disclaimer in `README.md`.
 
 ## Versioned roadmap

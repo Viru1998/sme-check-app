@@ -25,11 +25,23 @@ def questions() -> dict:
     }
 
 
+def make_priority(rows: dict[str, tuple[float, float]]) -> pd.DataFrame:
+    """Build a priority table from {subcategory: (combined_score, threat weight)}."""
+    return pd.DataFrame.from_dict(
+        rows, orient="index", columns=["combined_score", "weighted_coverage"]
+    )
+
+
 @pytest.fixture
-def priority() -> pd.Series:
-    """Weights summing to 4.0, with one zero-score Subcategory."""
-    return pd.Series(
-        {"PR.IR-01": 3.0, "PR.AA-05": 1.0, "PR.AT-01": 0.0, "DE.CM-09": 9.0}
+def priority() -> pd.DataFrame:
+    """Combined scores summing to 4.0, with one zero-score Subcategory."""
+    return make_priority(
+        {
+            "PR.IR-01": (3.0, 2.0),
+            "PR.AA-05": (1.0, 1.0),
+            "PR.AT-01": (0.0, 0.0),
+            "DE.CM-09": (9.0, 3.0),
+        }
     )
 
 
@@ -87,6 +99,46 @@ def test_gaps_list_each_subcategory_once_with_all_question_texts(questions, prio
     assert gaps["CSF Subcategory"].is_unique
     aa05 = gaps.loc[gaps["CSF Subcategory"] == "PR.AA-05", "Questions"].item()
     assert aa05 == "MFA on email; MFA on admin; Least priv"
+
+
+def test_zero_score_gaps_break_ties_by_threat_weight_then_id():
+    # Synthetic weights: in the real CSV snapshot PR.DS-01 (2.68) outranks
+    # PR.PS-01 (2.59); this test pins the tie-break rule, not the real data.
+    questions = {
+        "items": [
+            {"id": "a", "text": "A", "csf_subcategory": "PR.DS-01"},
+            {"id": "b", "text": "B", "csf_subcategory": "PR.PS-01"},
+            {"id": "c", "text": "C", "csf_subcategory": "GV.PO-01"},
+            {"id": "d", "text": "D", "csf_subcategory": "RS.MA-01"},
+        ]
+    }
+    priority = make_priority(
+        {
+            "PR.DS-01": (0.0, 2.0),
+            "PR.PS-01": (0.0, 2.5),
+            "GV.PO-01": (0.0, 0.0),
+            "RS.MA-01": (0.0, 0.0),
+        }
+    )
+
+    gaps = score_assessment({}, questions, priority)["gaps"]
+
+    assert gaps["CSF Subcategory"].tolist() == [
+        "PR.PS-01",  # higher threat weight wins the combined_score tie
+        "PR.DS-01",
+        "GV.PO-01",  # equal threat weight: alphabetical
+        "RS.MA-01",
+    ]
+
+
+def test_combined_score_outranks_threat_weight(questions, priority):
+    # A much higher threat weight must not lift PR.AA-05 above PR.IR-01,
+    # which has the higher combined score.
+    priority.loc["PR.AA-05", "weighted_coverage"] = 99.0
+
+    gaps = score_assessment({}, questions, priority)["gaps"]
+
+    assert gaps["CSF Subcategory"].tolist()[:2] == ["PR.IR-01", "PR.AA-05"]
 
 
 def test_gaps_capped_at_top_n(questions, priority):
