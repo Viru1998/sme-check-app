@@ -129,6 +129,17 @@ def main() -> None:
 
         st.metric("Coverage score", f"{result['coverage_pct']:.0f}%")
 
+        # Update wording when v0.5 any-tick scoring replaces the stub.
+        st.info(
+            "ℹ️ **How coverage is scored.** From v0.5, coverage is measured per "
+            "CSF Subcategory: a Subcategory counts as covered if *any* question "
+            "mapped to it is ticked. For example, MFA on email but not on admin "
+            "accounts still marks PR.AA-05 (access permissions) as covered. "
+            "Real-world security is more granular than this, so treat covered "
+            "Subcategories as partially addressed, not complete. "
+            "This preview still counts individual questions."
+        )
+
         st.subheader("Your top priority gaps")
         st.caption(
             "⚠️ Priority scores below are PLACEHOLDER values. "
