@@ -18,8 +18,8 @@ Currently a working Streamlit skeleton with placeholder scoring. The full v1.0 r
 | Real scoring against `csf_sme_coverage` | ⬜ v0.5 | Wire the priority engine as a pip dependency |
 | PDF report export | ⬜ v0.5 | WeasyPrint + Jinja2 |
 | NIS2 / DORA article-level view | ⬜ v0.7 | Reorganise gap list by regulatory obligation |
-| User accounts + saved scans | ⬜ v1.0 | Flask-Login + SQLite |
-| Deployed publicly | ⬜ v1.0 | Streamlit Cloud → sme-check.streamlit.app |
+| Deployed publicly | ⬜ v0.7 | Streamlit Cloud → sme-check.streamlit.app |
+| User accounts + saved scans | ⬜ v1.0 | Flask-Login + SQLite. The Flask migration replaces the Streamlit Cloud deployment |
 
 ---
 
