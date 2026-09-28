@@ -30,4 +30,4 @@ jobs:
       - name: Check formatting
         # Run even if tests failed, so both problems show in one run.
         if: success() || failure()
-        run: black --check scoring.py
+        run: black --check scoring.py app.py tests/
