@@ -8,6 +8,7 @@ Run locally:
 Deploy free at:
     https://streamlit.io/cloud (point at this GitHub repo)
 """
+
 from pathlib import Path
 import yaml
 import streamlit as st
@@ -70,9 +71,15 @@ def main() -> None:
         sector = st.selectbox(
             "Sector",
             [
-                "Professional services", "Retail", "Manufacturing",
-                "Healthcare", "ICT / Software", "Hospitality",
-                "Construction", "Education", "Other",
+                "Professional services",
+                "Retail",
+                "Manufacturing",
+                "Healthcare",
+                "ICT / Software",
+                "Hospitality",
+                "Construction",
+                "Education",
+                "Other",
             ],
         )
     with col2:
