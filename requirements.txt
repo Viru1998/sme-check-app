@@ -1,10 +1,16 @@
 # SME Check - MVP dependencies
 # Minimal - deployable to Streamlit Community Cloud free tier.
 #
-# Later (for v1.0):
+# Priority data: data/combined_priority.csv is a snapshot of the
+# csf-sme-coverage pipeline output, copied from commit
+# f0e0beac178d1cbb62ec22eed2fadc2deebcbcd8 (see data/PROVENANCE.md).
+# The pipeline is deliberately NOT a pip dependency: its package does not
+# ship the CSV, and its runtime deps (mitreattack-python, stix2, scipy,
+# matplotlib, ...) are unused by this app.
+#
+# Later:
 #   weasyprint>=62.0   # PDF report generation
 #   jinja2>=3.1        # HTML template rendering
-#   git+https://github.com/Viru1998/csf-sme-coverage.git   # real scoring
 
 streamlit>=1.36
 pandas>=2.2
