@@ -38,7 +38,7 @@ sme-check-app/
 - **`load_questions()` is wrapped in `@st.cache_data`.** Edits to `questions.yml` won't appear in a running app until you clear the cache (press `C` in the app) or restart it.
 - **`questions.yml` schema:** top-level `version`, `last_updated`, and `items`. Each item has `id`, `text` and `csf_subcategory` (currently a single string). Several questions map to the same Subcategory: `PR.AA-05` and `PR.IR-01` have 3 each. The YAML header says "one or more" Subcategories, so if you add list support, update every consumer.
 - **The scorer's return contract drives the UI.** `compute_dummy_score(answers, questions)` returns `{coverage_pct, have, total, gaps}`, where `gaps` is a DataFrame with columns `CSF Subcategory`, `Question` and `Priority score`. The results section reads these keys directly. The v0.5 real scorer should either keep this contract or change the UI in the same edit.
-- **Coverage is currently counted per question, not per Subcategory.** Real scoring should aggregate answers per Subcategory before joining to `combined_priority.csv`. Otherwise Subcategories with more questions get over-weighted.
+- **Coverage is currently counted per question, not per Subcategory.** Real scoring should aggregate answers per Subcategory before joining to `combined_priority.csv`. Otherwise Subcategories with more questions get over-weighted. See "Scoring semantics" below for the aggregation rule.
 - **Privacy invariant:** the UI tells users "Nothing is sent to any server - your answers stay in your browser session." Don't add logging, persistence or telemetry of answers without updating that copy. Saved scans are a v1.0 feature and go under the gitignored `data/user_scans/` or `*.sqlite`.
 
 ## The scoring architecture we're building toward
@@ -60,6 +60,14 @@ Three tiers:
 - Precomputed CSVs from the `csf-sme-coverage` pipeline (coverage_matrix, combined_priority, irish_gap_ranking)
 - SQLite for saved assessments (v1.0)
 - Monthly cron re-runs the pipeline against fresh Verizon/ENISA/MTU downloads
+
+### Scoring semantics
+
+v0.5 uses **any-tick semantics**: a CSF Subcategory counts as "have" if at least one question mapped to it is ticked. It counts as a gap only when every question mapped to it is unticked.
+
+- Coverage is measured over Subcategories: (Subcategories marked "have") ÷ (distinct Subcategories in `questions.yml`).
+- The gap list contains only Subcategories that are gaps, ranked by their `combined_priority.csv` score. Each Subcategory appears once, however many questions map to it.
+- Example: ticking only `mfa_email` marks `PR.AA-05` as "have", even though `mfa_admin` and `least_privilege` are unticked.
 
 ## Versioned roadmap
 
