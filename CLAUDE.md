@@ -79,6 +79,8 @@ v0.5 uses **any-tick semantics**: a CSF Subcategory counts as "have" if at least
 | **v0.7** | ~40 h | NIS2 / DORA article-level view, deployed to Streamlit Cloud |
 | **v1.0** | ~40 h | Flask-Login accounts, saved scans, sector-specific question sets, email delivery |
 
+**Scoring review (v0.7 or v1.0):** evaluate replacing any-tick semantics with fractional per-Subcategory scoring (for example, 2 of 3 `PR.AA-05` questions ticked = 0.67). Base the decision on real user feedback about whether any-tick overstates coverage. See "Scoring semantics" above.
+
 The v0.7 Streamlit Cloud deployment is temporary: the v1.0 Flask migration replaces it. Keep this roadmap and the one in `README.md` in sync when either changes.
 
 ## Conventions
