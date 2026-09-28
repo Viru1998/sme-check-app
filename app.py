@@ -40,7 +40,7 @@ def load_questions() -> dict:
 # ---------------------------------------------------------------
 # TODO: replace with real call into csf_sme_coverage.score
 # For MVP: dummy score = (# unchecked questions) / (total) * max_weight
-def compute_dummy_score(answers: dict, questions: dict) -> dict:
+def compute_dummy_score(answers: dict, questions: dict) -> dict:  # PLACEHOLDER — replace in v0.5
     """Placeholder scoring that returns fake but plausible results.
 
     Real implementation will:
