@@ -6,7 +6,7 @@ import pandas as pd
 import pytest
 import yaml
 
-from scoring import UNWEIGHTED_NOTE, load_priority, score_assessment
+from scoring import UNWEIGHTED_NOTE, gap_note, load_priority, score_assessment
 
 QUESTIONS_FILE = Path(__file__).parent.parent / "data" / "questions.yml"
 
@@ -171,3 +171,37 @@ def test_real_data_question_ids_are_unique():
     ids = [item["id"] for item in questions["items"]]
 
     assert len(ids) == len(set(ids))
+
+
+HIGH_NOTE_229 = (
+    "High global threat weight (2.29) — no Irish gap data in source survey. "
+    "Treat as high priority."
+)
+
+
+@pytest.mark.parametrize(
+    ("combined", "threat", "expected"),
+    [
+        (1.5, 2.0, ""),  # scored gap: no caption
+        (0.0, 2.29, HIGH_NOTE_229),
+        (0.0, 1.0, HIGH_NOTE_229.replace("2.29", "1.00")),  # threshold inclusive
+        (0.0, 0.99, "Global threat weight 0.99 — no Irish gap data in source survey."),
+        (0.0, 0.04, "Global threat weight 0.04 — no Irish gap data in source survey."),
+        (0.0, 0.0, UNWEIGHTED_NOTE),
+    ],
+)
+def test_gap_note(combined, threat, expected):
+    assert gap_note(combined, threat) == expected
+
+
+def test_real_data_zero_score_gap_captions():
+    questions = yaml.safe_load(QUESTIONS_FILE.read_text(encoding="utf-8"))
+    gaps = score_assessment({}, questions, load_priority(), top_n=100)["gaps"]
+    notes = gaps.set_index("CSF Subcategory")["Note"]
+
+    assert notes["PR.PS-01"].startswith("High global threat weight (2.59)")
+    assert notes["GV.SC-04"] == (
+        "Global threat weight 0.04 — no Irish gap data in source survey."
+    )
+    assert notes["RS.MA-01"] == UNWEIGHTED_NOTE
+    assert notes["PR.IR-01"] == ""

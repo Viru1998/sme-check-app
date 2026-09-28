@@ -16,13 +16,16 @@ import pandas as pd
 PRIORITY_FILE = Path(__file__).parent / "data" / "combined_priority.csv"
 TOP_N_GAPS = 10
 UNWEIGHTED_NOTE = "No combined score in source data"
+# Threat weight (weighted_coverage) at or above which a zero-score gap is
+# flagged as high priority. Weights in the CSV snapshot range 0-2.68.
+HIGH_THREAT_WEIGHT = 1.0
 
 
 def load_priority(path: Path = PRIORITY_FILE) -> pd.DataFrame:
     """Load `combined_score` and `weighted_coverage` indexed by Subcategory ID.
 
-    `weighted_coverage` is the Verizon DBIR threat weight; it is used only to
-    break ties in the gap list.
+    `weighted_coverage` is the Verizon DBIR threat weight; it is used to break
+    ties in the gap list and to caption zero-score gaps.
     """
     df = pd.read_csv(
         path, usecols=["subcategory", "combined_score", "weighted_coverage"]
@@ -38,6 +41,27 @@ def group_by_subcategory(questions: dict) -> dict[str, list[dict]]:
     return grouped
 
 
+def gap_note(combined_score: float, threat_weight: float) -> str:
+    """Caption for a gap row.
+
+    A combined_score of 0 with a threat weight means the source survey has no
+    Irish adoption-gap figure, so the product is 0 despite real threat data.
+    """
+    if combined_score > 0:
+        return ""
+    if threat_weight >= HIGH_THREAT_WEIGHT:
+        return (
+            f"High global threat weight ({threat_weight:.2f}) — no Irish gap "
+            "data in source survey. Treat as high priority."
+        )
+    if threat_weight > 0:
+        return (
+            f"Global threat weight {threat_weight:.2f} — no Irish gap data "
+            "in source survey."
+        )
+    return UNWEIGHTED_NOTE
+
+
 def score_assessment(
     answers: dict[str, bool],
     questions: dict,
@@ -50,11 +74,11 @@ def score_assessment(
       weighted_pct  covered combined_score / total combined_score x 100
       coverage_pct  covered Subcategories / assessed Subcategories x 100
       have, total   covered and assessed Subcategory counts
-      gaps          DataFrame of up to `top_n` uncovered Subcategories, highest
+      gaps          DataFrame of up to `top_n` uncovered Subcategories,
                     sorted by combined_score desc, then weighted_coverage
                     (threat weight) desc, then Subcategory ID; zero-score gaps
-                    carry a Note, since 0 means missing threat weight or Irish
-                    gap data rather than low importance
+                    carry a Note from `gap_note`, since 0 means missing threat
+                    weight or Irish gap data rather than low importance
 
     Raises ValueError if a question maps to a Subcategory missing from
     `priority`.
@@ -83,7 +107,7 @@ def score_assessment(
                 "CSF Subcategory": sub,
                 "Priority score": round(weights[sub], 2),
                 "Questions": "; ".join(item["text"] for item in items),
-                "Note": "" if weights[sub] > 0 else UNWEIGHTED_NOTE,
+                "Note": gap_note(weights[sub], assessed.at[sub, "weighted_coverage"]),
                 "_combined": weights[sub],
                 "_threat": assessed.at[sub, "weighted_coverage"],
             }
