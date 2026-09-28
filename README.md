@@ -8,14 +8,14 @@ Built on the [csf-sme-coverage](https://github.com/Viru1998/csf-sme-coverage) an
 
 ---
 
-## Status: MVP skeleton (v0.1)
+## Status: v0.5 in progress
 
-Currently a working Streamlit skeleton with placeholder scoring. The full v1.0 roadmap:
+Real threat-weighted scoring is live. The PDF export and the extended question set are next. The full v1.0 roadmap:
 
 | Milestone | Status | Notes |
 |---|---|---|
 | Streamlit skeleton runnable end-to-end | ✅ v0.1 | Form UI, YAML-loaded questions, dummy scoring |
-| Real scoring against `csf_sme_coverage` | ⬜ v0.5 | Wire the priority engine as a pip dependency |
+| Real scoring against `csf_sme_coverage` | ✅ v0.5 | Any-tick coverage weighted by a pinned snapshot of `combined_priority.csv` |
 | PDF report export | ⬜ v0.5 | WeasyPrint + Jinja2 |
 | NIS2 / DORA article-level view | ⬜ v0.7 | Reorganise gap list by regulatory obligation |
 | Deployed publicly | ⬜ v0.7 | Streamlit Cloud → sme-check.streamlit.app |
@@ -34,12 +34,14 @@ python -m venv .venv
 .venv\Scripts\activate            # Windows
 # source .venv/bin/activate       # macOS/Linux
 
-pip install -r requirements.txt
+pip install -r requirements.txt       # or requirements-dev.txt for pytest + black
 
 streamlit run app.py
 ```
 
-The app will open at <http://localhost:8501>. Complete the assessment, click **Get my assessment**, and you'll see a placeholder score and gap list. (Real scoring is wired up in v0.5.)
+The app will open at <http://localhost:8501>. Complete the assessment, click **Get my assessment**, and you'll see your threat-weighted coverage and your top priority gaps.
+
+Run the tests with `pytest`.
 
 ---
 
@@ -58,10 +60,15 @@ No credit card, no server management. Streamlit Cloud auto-redeploys on every gi
 
 ```
 sme-check-app/
-├── app.py                Streamlit entry point (~120 lines)
+├── app.py                Streamlit entry point and UI
+├── scoring.py            Any-tick, threat-weighted scoring
 ├── data/
-│   └── questions.yml     20-question assessment (extend to ~40 for v1.0)
-├── requirements.txt      Pinned dependencies
+│   ├── questions.yml     20-question assessment (extend to ~40 for v0.5)
+│   ├── combined_priority.csv   Priority scores from csf-sme-coverage (pinned snapshot)
+│   └── PROVENANCE.md     Source commit of the CSV snapshot
+├── tests/                pytest tests
+├── requirements.txt      Runtime dependencies
+├── requirements-dev.txt  Adds pytest and black
 ├── LICENSE               MIT
 └── README.md             This file
 ```
@@ -72,13 +79,13 @@ sme-check-app/
 
 The initial 20 questions cover the highest-priority CSF 2.0 Subcategories identified in the underlying research: `PR.IR-01` (network protection), `PR.AA-05` (least privilege), `DE.CM-09` (endpoint monitoring), `PR.DS-11` (backups), `GV.PO-01` (policy), `RS.MA-01` (incident response), `PR.AT-01` (training) and 13 others.
 
-Each question is mapped to its CSF Subcategory in [`data/questions.yml`](data/questions.yml). Adding a new question is a two-line YAML edit — no code change required.
+Each question is mapped to its CSF Subcategory in [`data/questions.yml`](data/questions.yml). Adding a new question is a two-line YAML edit — no code change required. The Subcategory must exist in `data/combined_priority.csv`; `pytest` checks this.
 
 ### How coverage is scored
 
-From v0.5, coverage is scored per CSF Subcategory using any-tick semantics: a Subcategory counts as covered if any of its underlying questions is ticked. This means an SME with MFA on email but not on admin accounts will show `PR.AA-05` as covered. Real-world posture is more granular than this MVP can capture. Treat every covered Subcategory as "partially addressed" rather than "complete".
+Coverage is scored per CSF Subcategory using any-tick semantics: a Subcategory counts as covered if any of its underlying questions is ticked. This means an SME with MFA on email but not on admin accounts will show `PR.AA-05` as covered. Real-world posture is more granular than this MVP can capture. Treat every covered Subcategory as "partially addressed" rather than "complete".
 
-(v0.1 uses placeholder scoring; see [Status](#status-mvp-skeleton-v01).)
+The headline figure weights each Subcategory by its `combined_score` (Verizon 2026 DBIR threat weight × MTU/NCSC 2025 Irish adoption gap). Some Subcategories score 0 because the source data lacks one of those two figures, not because they don't matter. The plain Subcategory count is shown alongside for that reason.
 
 ---
 
@@ -86,7 +93,6 @@ From v0.5, coverage is scored per CSF Subcategory using any-tick semantics: a Su
 
 Contributions (once v1.0 is out) welcome. Priorities in rough order:
 
-- Wire the real `csf_sme_coverage` scoring engine (v0.5)
 - Extend questions from 20 to ~40 (v0.5)
 - WeasyPrint PDF report with a branded template (v0.5)
 - Sector-specific question sets for the 11 MTU/NCSC 2025 sectors (v0.7)
