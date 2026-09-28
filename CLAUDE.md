@@ -68,6 +68,7 @@ v0.5 uses **any-tick semantics**: a CSF Subcategory counts as "have" if at least
 - Coverage is measured over Subcategories: (Subcategories marked "have") ÷ (distinct Subcategories in `questions.yml`).
 - The gap list contains only Subcategories that are gaps, ranked by their `combined_priority.csv` score. Each Subcategory appears once, however many questions map to it.
 - Example: ticking only `mfa_email` marks `PR.AA-05` as "have", even though `mfa_admin` and `least_privilege` are unticked.
+- **User-facing wording:** because any-tick is coarse, the results page and PDF report must label covered Subcategories "partially addressed", never "complete" or "fully covered". Keep this in sync with the "How coverage is scored" disclaimer in `README.md`.
 
 ## Versioned roadmap
 
