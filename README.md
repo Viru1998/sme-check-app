@@ -120,5 +120,4 @@ Data files remain the property of their respective publishers (NIST, MITRE, CTID
 ## Author
 
 **Viraj Ananda Gawde**
-MSc Cybersecurity — National College of Ireland
 [GitHub: @Viru1998](https://github.com/Viru1998)
