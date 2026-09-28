@@ -12,6 +12,6 @@
 #   weasyprint>=62.0   # PDF report generation
 #   jinja2>=3.1        # HTML template rendering
 
-streamlit>=1.36
+streamlit>=1.64   # width="stretch" on st.button
 pandas>=2.2
 pyyaml>=6.0

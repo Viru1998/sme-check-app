@@ -95,7 +95,7 @@ def main() -> None:
     st.divider()
 
     # ----- Submit -----
-    if st.button("Get my assessment", type="primary", use_container_width=True):
+    if st.button("Get my assessment", type="primary", width="stretch"):
         result = score_assessment(answers, questions, load_priority_table())
 
         st.metric(
@@ -129,7 +129,7 @@ def main() -> None:
             "no Irish adoption-gap figure for that Subcategory - not that it "
             "is unimportant."
         )
-        st.dataframe(result["gaps"], use_container_width=True, hide_index=True)
+        st.dataframe(result["gaps"], width="stretch", hide_index=True)
 
         st.info(
             "📄 PDF export coming in a future release "
