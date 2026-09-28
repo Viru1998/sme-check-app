@@ -1,6 +1,6 @@
 """
 SME Check - NIST CSF 2.0 Self-Assessment for Irish SMEs
-Streamlit MVP skeleton.
+Streamlit MVP (v0.5 real scoring).
 
 Run locally:
     streamlit run app.py
@@ -8,10 +8,13 @@ Run locally:
 Deploy free at:
     https://streamlit.io/cloud (point at this GitHub repo)
 """
+
 from pathlib import Path
 import yaml
 import streamlit as st
 import pandas as pd
+
+from scoring import load_priority, score_assessment
 
 # ---------------------------------------------------------------
 # Page config
@@ -36,38 +39,12 @@ def load_questions() -> dict:
 
 
 # ---------------------------------------------------------------
-# Scoring - PLACEHOLDER
+# Scoring
 # ---------------------------------------------------------------
-# TODO: replace with real call into csf_sme_coverage.score
-# For MVP: dummy score = (# unchecked questions) / (total) * max_weight
-def compute_dummy_score(answers: dict, questions: dict) -> dict:  # PLACEHOLDER — replace in v0.5
-    """Placeholder scoring that returns fake but plausible results.
-
-    Real implementation will:
-      1. Map each unchecked question -> CSF Subcategory
-      2. Look up combined_priority.csv from csf_sme_coverage outputs
-      3. Return the top-N gaps for this SME
-    """
-    total = len(questions["items"])
-    have = sum(1 for q in questions["items"] if answers.get(q["id"], False))
-    coverage_pct = (have / total * 100) if total else 0
-    missing = [q for q in questions["items"] if not answers.get(q["id"], False)]
-
-    # Dummy gap list - sorted by fake priority (real version uses combined_priority.csv)
-    gaps = pd.DataFrame([
-        {
-            "CSF Subcategory": q["csf_subcategory"],
-            "Question": q["text"],
-            "Priority score": round(2.5 - i * 0.15, 2),  # dummy descending
-        }
-        for i, q in enumerate(missing[:10])
-    ])
-    return {
-        "coverage_pct": coverage_pct,
-        "have": have,
-        "total": total,
-        "gaps": gaps,
-    }
+@st.cache_data
+def load_priority_table() -> pd.DataFrame:
+    """Load priority scores per CSF Subcategory (cached across reruns)."""
+    return load_priority()
 
 
 # ---------------------------------------------------------------
@@ -94,9 +71,15 @@ def main() -> None:
         sector = st.selectbox(
             "Sector",
             [
-                "Professional services", "Retail", "Manufacturing",
-                "Healthcare", "ICT / Software", "Hospitality",
-                "Construction", "Education", "Other",
+                "Professional services",
+                "Retail",
+                "Manufacturing",
+                "Healthcare",
+                "ICT / Software",
+                "Hospitality",
+                "Construction",
+                "Education",
+                "Other",
             ],
         )
     with col2:
@@ -119,34 +102,41 @@ def main() -> None:
     st.divider()
 
     # ----- Submit -----
-    if st.button("Get my assessment", type="primary", use_container_width=True):
-        result = compute_dummy_score(answers, questions)
+    if st.button("Get my assessment", type="primary", width="stretch"):
+        result = score_assessment(answers, questions, load_priority_table())
 
+        st.metric(
+            "Threat-weighted coverage",
+            f"{result['weighted_pct']:.0f}%",
+            help=(
+                "Share of the total priority score you have partially addressed. "
+                "Each Subcategory is weighted by Verizon 2026 DBIR threat weight "
+                "× MTU/NCSC 2025 Irish adoption gap."
+            ),
+        )
         st.success(
-            f"You have implemented {result['have']} of {result['total']} controls "
-            f"({result['coverage_pct']:.0f}% coverage)."
+            f"{result['have']} of {result['total']} CSF Subcategories "
+            f"partially addressed ({result['coverage_pct']:.0f}% unweighted)."
         )
 
-        st.metric("Coverage score", f"{result['coverage_pct']:.0f}%")
-
-        # Update wording when v0.5 any-tick scoring replaces the stub.
         st.info(
-            "ℹ️ **How coverage is scored.** From v0.5, coverage is measured per "
-            "CSF Subcategory: a Subcategory counts as covered if *any* question "
+            "ℹ️ **How coverage is scored.** Coverage is measured per CSF "
+            "Subcategory: a Subcategory counts as covered if *any* question "
             "mapped to it is ticked. For example, MFA on email but not on admin "
             "accounts still marks PR.AA-05 (access permissions) as covered. "
             "Real-world security is more granular than this, so treat covered "
-            "Subcategories as partially addressed, not complete. "
-            "This preview still counts individual questions."
+            "Subcategories as partially addressed, not complete."
         )
 
         st.subheader("Your top priority gaps")
         st.caption(
-            "⚠️ Priority scores below are PLACEHOLDER values. "
-            "The real version calls into `csf_sme_coverage.score` "
-            "which uses the Verizon 2026 DBIR + MTU/NCSC 2025 evidence base."
+            "Priority score = Verizon 2026 DBIR threat weight × MTU/NCSC 2025 "
+            "Irish adoption gap, from the csf-sme-coverage pipeline. "
+            "A score of 0 means the source data has either no threat weight or "
+            "no Irish adoption-gap figure for that Subcategory - not that it "
+            "is unimportant."
         )
-        st.dataframe(result["gaps"], use_container_width=True, hide_index=True)
+        st.dataframe(result["gaps"], width="stretch", hide_index=True)
 
         st.info(
             "📄 PDF export coming in a future release "
