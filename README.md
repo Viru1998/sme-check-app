@@ -77,7 +77,7 @@ sme-check-app/
 
 ## Question set
 
-The initial 20 questions cover the highest-priority CSF 2.0 Subcategories identified in the underlying research: `PR.IR-01` (network protection), `PR.AA-05` (least privilege), `DE.CM-09` (endpoint monitoring), `PR.DS-11` (backups), `GV.PO-01` (policy), `RS.MA-01` (incident response), `PR.AT-01` (training) and 13 others.
+The initial set has 20 questions covering 13 CSF Subcategories drawn from the underlying research, including `PR.IR-01` (network protection), `PR.AA-05` (least privilege), `DE.CM-09` (endpoint monitoring), `PR.DS-11` (backups), `GV.PO-01` (policy), `RS.MA-01` (incident response) and `PR.AT-01` (training).
 
 Each question is mapped to its CSF Subcategory in [`data/questions.yml`](data/questions.yml). Adding a new question is a two-line YAML edit — no code change required. The Subcategory must exist in `data/combined_priority.csv`; `pytest` checks this.
 
