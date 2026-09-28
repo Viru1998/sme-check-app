@@ -98,12 +98,19 @@ def main() -> None:
     if st.button("Get my assessment", type="primary", use_container_width=True):
         result = score_assessment(answers, questions, load_priority_table())
 
+        st.metric(
+            "Threat-weighted coverage",
+            f"{result['weighted_pct']:.0f}%",
+            help=(
+                "Share of the total priority score you have partially addressed. "
+                "Each Subcategory is weighted by Verizon 2026 DBIR threat weight "
+                "× MTU/NCSC 2025 Irish adoption gap."
+            ),
+        )
         st.success(
             f"{result['have']} of {result['total']} CSF Subcategories "
-            f"partially addressed ({result['coverage_pct']:.0f}%)."
+            f"partially addressed ({result['coverage_pct']:.0f}% unweighted)."
         )
-
-        st.metric("Coverage score", f"{result['coverage_pct']:.0f}%")
 
         # Update wording when v0.5 any-tick scoring replaces the stub.
         st.info(
