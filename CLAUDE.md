@@ -24,11 +24,12 @@ This app is the follow-on artefact from a completed MSc Cybersecurity practicum 
 sme-check-app/
 ├── app.py                Streamlit entry point: page config, cached loaders, UI
 ├── scoring.py            Any-tick scoring; no Streamlit imports so pytest can import it
+├── ordering.py           Sector-based question ordering (presentation only)
 ├── data/
 │   ├── questions.yml     36 SME-friendly questions, each mapped to a CSF Subcategory
 │   ├── combined_priority.csv   Pinned snapshot of the pipeline output (do not hand-edit)
 │   └── PROVENANCE.md     Source commit of the CSV snapshot and how to refresh it
-├── tests/                pytest tests for scoring.py
+├── tests/                pytest tests for scoring.py and ordering.py
 ├── .streamlit/config.toml  headless; gatherUsageStats = false
 ├── .github/workflows/ci.yml  pytest + black --check on push to main and PRs
 ├── requirements.txt      Runtime deps (streamlit, pandas, pyyaml); future deps listed as comments
@@ -43,7 +44,8 @@ sme-check-app/
 - **Streamlit reruns the whole script on every interaction.** `main()` in `app.py` rebuilds the form on every rerun. Results only render in the rerun triggered by the "Get my assessment" button, so they vanish on the next widget change. Use `st.session_state` if results need to persist, for example for a PDF download button.
 - **Question IDs are also widget keys.** Each checkbox uses `key=q["id"]`, and `answers` is a `{question_id: bool}` dict. A duplicate ID in `questions.yml` causes a Streamlit `DuplicateWidgetID` error.
 - **`load_questions()` and `load_priority_table()` are wrapped in `@st.cache_data`.** Edits to `questions.yml` or the CSV won't appear in a running app until you clear the cache (press `C` in the app) or restart it.
-- **`questions.yml` schema:** top-level `version`, `last_updated`, and `items`. Each item has `id`, `text` and `csf_subcategory` (currently a single string). Several questions map to the same Subcategory: `PR.AA-05` and `PR.IR-01` have 5 each. The YAML header says "one or more" Subcategories, so if you add list support, update every consumer.
+- **`questions.yml` schema:** top-level `version`, `last_updated`, and `items`. Each item has `id`, `text`, `csf_subcategory` (currently a single string) and an optional `sectors` list. Several questions map to the same Subcategory: `PR.AA-05` and `PR.IR-01` have 5 each. The YAML header says "one or more" Subcategories, so if you add list support, update every consumer.
+- **Sector ordering is presentation only.** `ordering.order_questions(items, sector_key)` never drops a question. It puts questions tagged with the selected sector first, then untagged (universal) questions, then questions tagged only with other sectors, keeping YAML order within each tier. "Other" (`None`) keeps YAML order. `ordering.SECTOR_KEYS` maps the dropdown labels to the YAML tags and also supplies the dropdown options, so add a sector there, not in `app.py`. Ticks survive a sector change because checkbox keys are question IDs, not positions. Scoring ignores `sectors`.
 - **The scorer's return contract drives the UI.** `scoring.score_assessment(answers, questions, priority)` returns `{weighted_pct, coverage_pct, have, total, gaps}`. `have` and `total` count Subcategories, not questions. `gaps` is a DataFrame with columns `CSF Subcategory`, `Priority score`, `Questions` and `Note`. The results section reads these keys directly, so change the UI in the same edit as the contract.
 - **`score_assessment` raises `ValueError` if a question maps to a Subcategory missing from the CSV.** A test also checks this against the real data, so a new question with a mistyped or unscored Subcategory fails `pytest`.
 - **Privacy invariant:** the UI tells users their answers "are processed to produce your results and are not stored, logged, or shared by this app", and that Streamlit Community Cloud "sets its own analytics and functional cookies", linking to Streamlit's privacy policy. Don't add logging, persistence or telemetry of answers, or third-party scripts, without updating that copy.
