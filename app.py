@@ -58,8 +58,10 @@ def main() -> None:
     )
     st.caption(
         "Companion tool to the MSc practicum research at NCI. "
-        "Takes ~10 minutes. Nothing is sent to any server - "
-        "your answers stay in your browser session."
+        "Takes about 10 minutes. Your answers are processed to produce your "
+        "results and are not stored, logged, or shared. The app runs on "
+        "Streamlit Community Cloud infrastructure and does not use tracking "
+        "cookies or analytics; a single security cookie protects the form."
     )
 
     st.divider()
