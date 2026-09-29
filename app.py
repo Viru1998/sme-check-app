@@ -14,6 +14,7 @@ import yaml
 import streamlit as st
 import pandas as pd
 
+from ordering import SECTOR_KEYS, order_questions
 from scoring import load_priority, score_assessment
 
 # ---------------------------------------------------------------
@@ -71,20 +72,7 @@ def main() -> None:
     st.subheader("About your organisation")
     col1, col2 = st.columns(2)
     with col1:
-        sector = st.selectbox(
-            "Sector",
-            [
-                "Professional services",
-                "Retail",
-                "Manufacturing",
-                "Healthcare",
-                "ICT / Software",
-                "Hospitality",
-                "Construction",
-                "Education",
-                "Other",
-            ],
-        )
+        sector = st.selectbox("Sector", list(SECTOR_KEYS))
     with col2:
         size = st.selectbox(
             "Employees",
@@ -95,11 +83,19 @@ def main() -> None:
 
     # ----- Assessment -----
     st.subheader("Your current controls")
-    st.caption("Tick each control your organisation currently has in place.")
+    sector_key = SECTOR_KEYS[sector]
+    st.caption(
+        "Tick each control your organisation currently has in place."
+        + (
+            f" Questions most relevant to {sector} are shown first."
+            if sector_key
+            else ""
+        )
+    )
 
     questions = load_questions()
     answers = {}
-    for q in questions["items"]:
+    for q in order_questions(questions["items"], sector_key):
         answers[q["id"]] = st.checkbox(q["text"], key=q["id"])
 
     st.divider()

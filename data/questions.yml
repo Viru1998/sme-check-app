@@ -7,6 +7,11 @@
 #   1. Pick a stable snake_case id (never change once shipped)
 #   2. Phrase the question in plain English (avoid CSF jargon)
 #   3. Map to CSF Subcategories - use the exact IDs from CSF 2.0 Core
+#   4. Optional: add `sectors: [healthcare, ...]` to show the question first
+#      for those sectors. Omit it for universal questions. Tags must be keys
+#      from ordering.SECTOR_KEYS: professional_services, retail,
+#      manufacturing, healthcare, ict, hospitality, construction, education.
+#      This only changes question order; every question is always shown.
 #
 # The initial set covers the top-10 combined_priority items from the
 # dissertation research. Extend to ~40 questions for full coverage.
