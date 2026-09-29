@@ -1,8 +1,13 @@
 # SME Check
 
+[![Live app](https://img.shields.io/badge/live-sme--check.streamlit.app-FF4B4B?logo=streamlit&logoColor=white)](https://sme-check.streamlit.app)
+[![CI](https://github.com/Viru1998/sme-check-app/actions/workflows/ci.yml/badge.svg)](https://github.com/Viru1998/sme-check-app/actions/workflows/ci.yml)
+
 **A cybersecurity self-assessment tool for Irish small and medium enterprises, based on NIST CSF 2.0 and empirical threat evidence.**
 
 An SME owner or advisor fills a ten-minute assessment describing their existing security controls; the app returns their coverage score, a personalised list of priority gaps, and (in v1.0) a NIS2 / DORA alignment report as a downloadable PDF.
+
+**Try it now: <https://sme-check.streamlit.app>**. No sign-up needed.
 
 Built on the [csf-sme-coverage](https://github.com/Viru1998/csf-sme-coverage) analytical pipeline.
 
@@ -10,15 +15,23 @@ Built on the [csf-sme-coverage](https://github.com/Viru1998/csf-sme-coverage) an
 
 ## Status: v0.5 in progress
 
-Real threat-weighted scoring is live. The PDF export and the extended question set are next. The full v1.0 roadmap:
+The app is live with real threat-weighted scoring and a 36-question assessment. The PDF export is the last v0.5 item.
 
-| Milestone | Status | Notes |
+### Shipped
+
+| Milestone | Version | Notes |
 |---|---|---|
-| Streamlit skeleton runnable end-to-end | ✅ v0.1 | Form UI, YAML-loaded questions, dummy scoring |
+| Deployed publicly | ✅ Live | Streamlit Community Cloud → [sme-check.streamlit.app](https://sme-check.streamlit.app), redeploys on every push to `main` |
+| Streamlit skeleton runnable end-to-end | ✅ v0.1 | Form UI, YAML-loaded questions |
 | Real scoring against `csf_sme_coverage` | ✅ v0.5 | Any-tick coverage weighted by a pinned snapshot of `combined_priority.csv` |
+| Question set extended to 36 | ✅ v0.5 | 16 new questions across 9 Subcategories |
+
+### Planned
+
+| Milestone | Version | Notes |
+|---|---|---|
 | PDF report export | ⬜ v0.5 | WeasyPrint + Jinja2 |
 | NIS2 / DORA article-level view | ⬜ v0.7 | Reorganise gap list by regulatory obligation |
-| Deployed publicly | ⬜ v0.7 | Streamlit Cloud → sme-check.streamlit.app |
 | User accounts + saved scans | ⬜ v1.0 | Flask-Login + SQLite. The Flask migration replaces the Streamlit Cloud deployment |
 
 ---
@@ -93,7 +106,6 @@ The headline figure weights each Subcategory by its `combined_score` (Verizon 20
 
 Contributions (once v1.0 is out) welcome. Priorities in rough order:
 
-- Extend questions from 20 to ~40 (v0.5)
 - WeasyPrint PDF report with a branded template (v0.5)
 - Sector-specific question sets for the 11 MTU/NCSC 2025 sectors (v0.7)
 - NIS2 / DORA article-level alignment view (v0.7)
