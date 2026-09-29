@@ -27,6 +27,14 @@ items:
     text: "Staff have only the access rights they need for their role (no shared admin accounts)."
     csf_subcategory: "PR.AA-05"
 
+  - id: mfa_cloud_services
+    text: "MFA is enabled on all business cloud services (Microsoft 365, Google Workspace, Xero, and so on)."
+    csf_subcategory: "PR.AA-05"
+
+  - id: standard_user_accounts
+    text: "Day-to-day work uses standard user accounts, not administrator accounts."
+    csf_subcategory: "PR.AA-05"
+
   - id: network_segmentation
     text: "Guest Wi-Fi and business Wi-Fi are on separate networks."
     csf_subcategory: "PR.IR-01"
@@ -37,6 +45,14 @@ items:
 
   - id: firewall_managed
     text: "We have a managed firewall (not just the ISP-provided router)."
+    csf_subcategory: "PR.IR-01"
+
+  - id: admin_interfaces_restricted
+    text: "Router and firewall admin interfaces are reachable only from your internal network, not from the internet."
+    csf_subcategory: "PR.IR-01"
+
+  - id: wifi_password_strong
+    text: "Business Wi-Fi uses WPA2 or WPA3 with a strong password of at least 12 characters (not the ISP default)."
     csf_subcategory: "PR.IR-01"
 
   - id: patching_os
@@ -51,12 +67,28 @@ items:
     text: "Every laptop and desktop runs endpoint protection (antivirus / EDR)."
     csf_subcategory: "DE.CM-09"
 
+  - id: edr_managed
+    text: "Endpoint protection is managed centrally by your IT team or an MSP, not each user separately."
+    csf_subcategory: "DE.CM-09"
+
+  - id: mobile_device_managed
+    text: "Company laptops and phones are enrolled in mobile device management (Intune, Jamf, or similar)."
+    csf_subcategory: "DE.CM-09"
+
   - id: backups_offline
     text: "We have offline or air-gapped backups (not just cloud sync)."
     csf_subcategory: "PR.DS-11"
 
   - id: backups_tested
     text: "We have tested restoring from backup in the last 12 months."
+    csf_subcategory: "PR.DS-11"
+
+  - id: backups_encrypted
+    text: "Backups are encrypted so that a stolen backup drive does not expose your data."
+    csf_subcategory: "PR.DS-11"
+
+  - id: backups_multi_generation
+    text: "You keep multiple older backups (not just yesterday's), so you can recover from before a ransomware infection."
     csf_subcategory: "PR.DS-11"
 
   - id: security_policy
@@ -79,8 +111,24 @@ items:
     text: "We keep an up-to-date inventory of laptops, servers and business software."
     csf_subcategory: "ID.AM-01"
 
+  - id: asset_owner_tracked
+    text: "Each critical system has a named owner responsible for it."
+    csf_subcategory: "ID.AM-01"
+
+  - id: shadow_it_identified
+    text: "You know which cloud services staff actually use (file sharing, note taking, SaaS apps)."
+    csf_subcategory: "ID.AM-01"
+
   - id: password_manager
     text: "Staff use a password manager rather than reusing / writing down passwords."
+    csf_subcategory: "PR.AA-01"
+
+  - id: password_length_min
+    text: "Staff passwords are at least 12 characters long, or your password tool enforces this."
+    csf_subcategory: "PR.AA-01"
+
+  - id: former_staff_disabled
+    text: "Accounts for staff who have left the organisation are disabled within one working day."
     csf_subcategory: "PR.AA-01"
 
   - id: supplier_review
