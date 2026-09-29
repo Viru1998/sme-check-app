@@ -63,6 +63,10 @@ items:
     text: "Business applications (Office, accounting software, etc.) are patched regularly."
     csf_subcategory: "PR.PS-01"
 
+  - id: patching_firmware
+    text: "Router, firewall and network device firmware is updated at least every six months."
+    csf_subcategory: "PR.PS-01"
+
   - id: endpoint_av
     text: "Every laptop and desktop runs endpoint protection (antivirus / EDR)."
     csf_subcategory: "DE.CM-09"
@@ -139,6 +143,18 @@ items:
     text: "Sensitive data on laptops and USB drives is encrypted."
     csf_subcategory: "PR.DS-01"
 
+  - id: usb_policy
+    text: "Removable media (USB drives, external hard drives) are either encrypted or their use is restricted by policy."
+    csf_subcategory: "PR.DS-01"
+
   - id: log_monitoring
     text: "Someone reviews security logs / alerts weekly (in-house or via an MSP)."
+    csf_subcategory: "DE.CM-01"
+
+  - id: alerts_configured
+    text: "Security alerts (failed logins, unusual sign-ins) are sent to a human by email or SMS, not just logged to a dashboard nobody checks."
+    csf_subcategory: "DE.CM-01"
+
+  - id: logs_retained_90_days
+    text: "Security logs are retained for at least 90 days (Microsoft 365 and Google Workspace defaults are often only 30)."
     csf_subcategory: "DE.CM-01"
