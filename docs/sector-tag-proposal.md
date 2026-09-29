@@ -1,6 +1,6 @@
 # Sector tag proposal for questions.yml
 
-**Status: proposed, awaiting approval.** No tags are applied yet.
+**Status: approved and applied as proposed**, with the three-tier ordering rule kept.
 
 Tags only change question *order* (see `ordering.py`). Every SME still sees all 36 questions.
 

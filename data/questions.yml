@@ -31,10 +31,12 @@ items:
   - id: least_privilege
     text: "Staff have only the access rights they need for their role (no shared admin accounts)."
     csf_subcategory: "PR.AA-05"
+    sectors: [healthcare, professional_services]
 
   - id: mfa_cloud_services
     text: "MFA is enabled on all business cloud services (Microsoft 365, Google Workspace, Xero, and so on)."
     csf_subcategory: "PR.AA-05"
+    sectors: [professional_services, ict]
 
   - id: standard_user_accounts
     text: "Day-to-day work uses standard user accounts, not administrator accounts."
@@ -43,10 +45,12 @@ items:
   - id: network_segmentation
     text: "Guest Wi-Fi and business Wi-Fi are on separate networks."
     csf_subcategory: "PR.IR-01"
+    sectors: [hospitality, retail, healthcare, education]
 
   - id: vpn_remote
     text: "Remote workers connect via VPN or a zero-trust access solution."
     csf_subcategory: "PR.IR-01"
+    sectors: [professional_services, ict]
 
   - id: firewall_managed
     text: "We have a managed firewall (not just the ISP-provided router)."
@@ -59,6 +63,7 @@ items:
   - id: wifi_password_strong
     text: "Business Wi-Fi uses WPA2 or WPA3 with a strong password of at least 12 characters (not the ISP default)."
     csf_subcategory: "PR.IR-01"
+    sectors: [hospitality, retail]
 
   - id: patching_os
     text: "Operating systems and browsers are patched within 30 days of a security update."
@@ -71,6 +76,7 @@ items:
   - id: patching_firmware
     text: "Router, firewall and network device firmware is updated at least every six months."
     csf_subcategory: "PR.PS-01"
+    sectors: [manufacturing]
 
   - id: endpoint_av
     text: "Every laptop and desktop runs endpoint protection (antivirus / EDR)."
@@ -83,10 +89,12 @@ items:
   - id: mobile_device_managed
     text: "Company laptops and phones are enrolled in mobile device management (Intune, Jamf, or similar)."
     csf_subcategory: "DE.CM-09"
+    sectors: [construction, healthcare]
 
   - id: backups_offline
     text: "We have offline or air-gapped backups (not just cloud sync)."
     csf_subcategory: "PR.DS-11"
+    sectors: [healthcare, manufacturing]
 
   - id: backups_tested
     text: "We have tested restoring from backup in the last 12 months."
@@ -95,6 +103,7 @@ items:
   - id: backups_encrypted
     text: "Backups are encrypted so that a stolen backup drive does not expose your data."
     csf_subcategory: "PR.DS-11"
+    sectors: [healthcare, professional_services]
 
   - id: backups_multi_generation
     text: "You keep multiple older backups (not just yesterday's), so you can recover from before a ransomware infection."
@@ -115,6 +124,7 @@ items:
   - id: phishing_simulation
     text: "We run periodic phishing simulations to test staff awareness."
     csf_subcategory: "PR.AT-01"
+    sectors: [professional_services, construction]
 
   - id: asset_inventory
     text: "We keep an up-to-date inventory of laptops, servers and business software."
@@ -127,6 +137,7 @@ items:
   - id: shadow_it_identified
     text: "You know which cloud services staff actually use (file sharing, note taking, SaaS apps)."
     csf_subcategory: "ID.AM-01"
+    sectors: [ict, education]
 
   - id: password_manager
     text: "Staff use a password manager rather than reusing / writing down passwords."
@@ -139,18 +150,22 @@ items:
   - id: former_staff_disabled
     text: "Accounts for staff who have left the organisation are disabled within one working day."
     csf_subcategory: "PR.AA-01"
+    sectors: [hospitality, retail, construction]
 
   - id: supplier_review
     text: "We review the cybersecurity posture of key IT suppliers annually."
     csf_subcategory: "GV.SC-04"
+    sectors: [manufacturing, ict]
 
   - id: data_encryption
     text: "Sensitive data on laptops and USB drives is encrypted."
     csf_subcategory: "PR.DS-01"
+    sectors: [healthcare, professional_services, education]
 
   - id: usb_policy
     text: "Removable media (USB drives, external hard drives) are either encrypted or their use is restricted by policy."
     csf_subcategory: "PR.DS-01"
+    sectors: [manufacturing, healthcare]
 
   - id: log_monitoring
     text: "Someone reviews security logs / alerts weekly (in-house or via an MSP)."
