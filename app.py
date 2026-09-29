@@ -57,7 +57,7 @@ def main() -> None:
         "based on NIST CSF 2.0 and empirical threat data.**"
     )
     st.caption(
-        "Companion tool to the MSc practicum research at NCI. "
+        "Companion tool to the MSc practicum research. "
         "Takes about 10 minutes. Your answers are processed to produce your "
         "results and are not stored, logged, or shared. The app runs on "
         "Streamlit Community Cloud infrastructure and does not use tracking "
@@ -151,7 +151,7 @@ def main() -> None:
     st.caption(
         "Built on the [csf-sme-coverage](https://github.com/Viru1998/csf-sme-coverage) "
         "analytical pipeline. MIT Licence. "
-        "Viraj Ananda Gawde - MSc Cybersecurity, NCI."
+        "Viraj Ananda Gawde - MSc Cybersecurity."
     )
 
 

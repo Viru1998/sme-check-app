@@ -4,7 +4,7 @@
 
 An SME owner or advisor fills a ten-minute assessment describing their existing security controls; the app returns their coverage score, a personalised list of priority gaps, and (in v1.0) a NIS2 / DORA alignment report as a downloadable PDF.
 
-Built on the [csf-sme-coverage](https://github.com/Viru1998/csf-sme-coverage) analytical pipeline — companion code to the MSc Cybersecurity practicum research at the National College of Ireland (2026).
+Built on the [csf-sme-coverage](https://github.com/Viru1998/csf-sme-coverage) analytical pipeline.
 
 ---
 
