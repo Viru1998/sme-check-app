@@ -56,6 +56,19 @@ def test_untagged_before_healthcare_tagged_when_ict_selected(items):
     )
 
 
+def test_ict_tagged_before_untagged_when_ict_label_selected(items):
+    # Goes through the dropdown label, so it fails if "ICT / Software" stops
+    # mapping to the `ict` tag used in questions.yml.
+    ordered = order_questions(items, SECTOR_KEYS["ICT / Software"])
+    positions = {q["id"]: n for n, q in enumerate(ordered)}
+
+    ict = [q["id"] for q in items if "ict" in q.get("sectors", [])]
+    untagged = [q["id"] for q in items if not q.get("sectors")]
+
+    assert ict and untagged
+    assert max(positions[i] for i in ict) < min(positions[i] for i in untagged)
+
+
 def test_three_tiers_keep_yaml_order_within_each_tier():
     synthetic = [
         {"id": "u1"},

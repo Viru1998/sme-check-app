@@ -76,7 +76,7 @@ items:
   - id: patching_firmware
     text: "Router, firewall and network device firmware is updated at least every six months."
     csf_subcategory: "PR.PS-01"
-    sectors: [manufacturing]
+    sectors: [manufacturing, construction]
 
   - id: endpoint_av
     text: "Every laptop and desktop runs endpoint protection (antivirus / EDR)."
@@ -89,7 +89,7 @@ items:
   - id: mobile_device_managed
     text: "Company laptops and phones are enrolled in mobile device management (Intune, Jamf, or similar)."
     csf_subcategory: "DE.CM-09"
-    sectors: [construction, healthcare]
+    sectors: [construction, healthcare, hospitality]
 
   - id: backups_offline
     text: "We have offline or air-gapped backups (not just cloud sync)."
@@ -124,7 +124,7 @@ items:
   - id: phishing_simulation
     text: "We run periodic phishing simulations to test staff awareness."
     csf_subcategory: "PR.AT-01"
-    sectors: [professional_services, construction]
+    sectors: [professional_services, healthcare, hospitality]
 
   - id: asset_inventory
     text: "We keep an up-to-date inventory of laptops, servers and business software."
