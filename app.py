@@ -59,9 +59,10 @@ def main() -> None:
     st.caption(
         "Companion tool to the MSc practicum research. "
         "Takes about 10 minutes. Your answers are processed to produce your "
-        "results and are not stored, logged, or shared. The app runs on "
-        "Streamlit Community Cloud infrastructure and does not use tracking "
-        "cookies or analytics; a single security cookie protects the form."
+        "results and are not stored, logged, or shared by this app. The app is "
+        "hosted on Streamlit Community Cloud, which sets its own analytics and "
+        "functional cookies — see "
+        "[Streamlit's privacy policy](https://streamlit.io/privacy-policy)."
     )
 
     st.divider()
